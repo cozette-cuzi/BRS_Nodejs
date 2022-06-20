@@ -1,7 +1,5 @@
 # Book Rental System
 
-
-
 A REST API performed with Nodejs, for the purpose of getting familiar with REST APIs & Nodejs.
 
 

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import debug from 'debug';
 
 const log: debug.IDebugger = debug('app:mongoose-service');
-
+const dbUri = process.env.DB_URI;
 class MongooseService {
     private count = 0;
     private mongooseOptions = {
@@ -23,7 +23,7 @@ class MongooseService {
     connectWithRetry = () => {
         log('Attempting MongoDB connection (will retry if needed)');
         mongoose
-            .connect("mongodb+srv://root:root@nodejs.6aqfa.mongodb.net/toptal-db?retryWrites=true&w=majority", this.mongooseOptions)
+            .connect(dbUri, this.mongooseOptions)
             .then(() => {
                 log('MongoDB is connected');
             })
