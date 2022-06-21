@@ -2,7 +2,6 @@ import express from 'express';
 import usersService from '../services/users.service';
 import argon2 from 'argon2';
 import debug from 'debug';
-import { PatchUserDto } from '../dto/patch.user.dto';
 
 const log: debug.IDebugger = debug('app:users-controller');
 

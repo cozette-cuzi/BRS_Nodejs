@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import debug from 'debug';
 
 const log: debug.IDebugger = debug('app:mongoose-service');
-const dbUri = process.env.DB_URI;
+var dbUri : string = process.env.DB_URI ?? "";
 class MongooseService {
     private count = 0;
     private mongooseOptions = {
