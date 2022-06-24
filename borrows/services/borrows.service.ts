@@ -28,14 +28,17 @@ class BorrowsService implements CRUD {
     return borrowsDao.getBorrowById(id);
   }
 
-  async deleteById (id: string) {
+  async deleteById(id: string) {
     return borrowsDao.removeBorrowById(id);
   }
 
-  async patchById (id: string, resource: PatchBorrowDto) {
+  async patchById(id: string, resource: PatchBorrowDto) {
     return borrowsDao.updateBorrowById(id, resource);
   }
 
+  async getByIds(readerId: string, bookId: string) {
+    return borrowsDao.getBorrowByData({ readerId: readerId, bookId: bookId });
+  }
 }
 
 export default new BorrowsService();

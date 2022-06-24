@@ -6,6 +6,7 @@ import borrowsController from "./controllers/borrows.controller";
 import { body } from "express-validator";
 import bodyValidationMiddleware from "../common/middleware/body.validation.middleware";
 import borrowsMiddleware from "./middleware/borrows.middleware";
+import borrowsService from "./services/borrows.service";
 
 export class BorrowsRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
@@ -18,6 +19,7 @@ export class BorrowsRoutes extends CommonRoutesConfig {
       .post(
         bodyValidationMiddleware.verifyBodyFieldsErrors,
         jwtMiddleware.validJWTNeeded,
+        borrowsMiddleware.validateBookNotAlreadyBorrowed,
         borrowsController.createBorrow
       );
 

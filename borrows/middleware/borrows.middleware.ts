@@ -17,6 +17,26 @@ class BorrowsMiddleware {
       });
     }
   }
+
+  async validateBookNotAlreadyBorrowed(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
+    const borrow = await borrowsService.getByIds(
+      res.locals.jwt.userId,
+      req.params.bookId
+    );
+
+    if (borrow) {
+      console.log(borrow);
+      res.status(400).send({
+        errors: [`Book ${req.params.bookId} is already borrowed`],
+      });
+    } else {
+      next();
+    }
+  }
 }
 
 export default new BorrowsMiddleware();

@@ -83,5 +83,9 @@ class BorrowsDao {
   async removeBorrowById(borrowId: string) {
     return this.Borrow.deleteOne({ _id: borrowId }).exec();
   }
+
+  async getBorrowByData(query: Object) {
+    return this.Borrow.findOne(query).populate("Borrow").exec();
+  }
 }
 export default new BorrowsDao();
