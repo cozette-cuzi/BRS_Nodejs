@@ -42,7 +42,7 @@ class BorrowsDao {
     return borrowId;
   }
 
-  async getBorrowsByUserId(readerId: String, limit = 25, page = 0) {
+  async getBorrowsByReaderId(readerId: String, limit = 25, page = 0) {
     return this.Borrow.find({ readerId: readerId })
       .limit(limit)
       .skip(limit * page)
@@ -56,17 +56,32 @@ class BorrowsDao {
       .exec();
   }
 
-  async updateGenreById(
+  async getBorrows(limit = 25, page = 0) {
+    return this.Borrow.find()
+      .limit(limit)
+      .skip(limit * page)
+      .exec();
+  }
+
+  async updateBorrowById(
     borrowId: string,
     borrowFields: PatchBorrowDto | PutBorrowDto
   ) {
-    const existingGenre = await this.Borrow.findOneAndUpdate(
+    const existingBorrow = await this.Borrow.findOneAndUpdate(
       { _id: borrowId },
       { $set: borrowFields },
       { new: true }
     ).exec();
 
-    return existingGenre;
+    return existingBorrow;
+  }
+
+  async getBorrowById(borrowId: string) {
+    return this.Borrow.findOne({ _id: borrowId }).populate("Borrow").exec();
+  }
+
+  async removeBorrowById(borrowId: string) {
+    return this.Borrow.deleteOne({ _id: borrowId }).exec();
   }
 }
 export default new BorrowsDao();

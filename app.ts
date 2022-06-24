@@ -16,6 +16,7 @@ import debug from 'debug';
 import helmet from 'helmet';
 import { BooksRoutes } from './books/books.routes.config';
 import { GenresRoutes } from './genres/genres.routes.config';
+import { BorrowsRoutes } from './borrows/borrows.routes.config';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -49,6 +50,8 @@ routes.push(new UsersRoutes(app));
 routes.push(new AuthRoutes(app));
 routes.push(new BooksRoutes(app));
 routes.push(new GenresRoutes(app));
+routes.push(new BorrowsRoutes(app));
+
 
 const runningMessage = `Server running at http://localhost:${port}`;
 app.get('/', (req: express.Request, res: express.Response) => {

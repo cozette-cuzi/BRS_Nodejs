@@ -10,8 +10,8 @@ class GenresController {
   }
 
   async getGenreById(req: express.Request, res: express.Response) {
-    const user = await genresService.readById(req.params.genreId);
-    res.status(200).send(user);
+    const genre = await genresService.readById(req.params.genreId);
+    res.status(200).send(genre);
   }
 
   async createGenre(req: express.Request, res: express.Response) {
