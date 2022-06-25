@@ -13,7 +13,7 @@ class BorrowsMiddleware {
       next();
     } else {
       res.status(404).send({
-        errors: [`Borrow ${req.params.bookId} not found`],
+        errors: [`Borrow ${req.params.borrowId} not found`],
       });
     }
   }
@@ -29,7 +29,6 @@ class BorrowsMiddleware {
     );
 
     if (borrow) {
-      console.log(borrow);
       res.status(400).send({
         errors: [`Book ${req.params.bookId} is already borrowed`],
       });
@@ -37,6 +36,43 @@ class BorrowsMiddleware {
       next();
     }
   }
+
+  async validateStatus(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
+    const borrow = await borrowsService.readById(req.params.borrowId);
+    let newStatus = req.body.status;
+    let oldStatus = borrow.status;
+    let isValidStatus =
+      (newStatus == "PENDING" && ["PENDING"].includes(oldStatus)) ||
+      (newStatus == "ACCEPTED" &&
+        ["ACCEPTED", "PENDING"].includes(oldStatus)) ||
+      (newStatus == "RETURNED" &&
+        ["RETURNED", "ACCEPTED"].includes(oldStatus)) ||
+      (newStatus == "REJECTED" && ["REJECTED", "PENDING"].includes(oldStatus));
+    if (isValidStatus) {
+      next();
+    } else {
+      res.status(400).send({
+        errors: [
+          `You cannot change status from ${borrow.status} to ${req.body.status}`,
+        ],
+      });
+    }
+  }
+
+  isValidStatus = (oldStatus: string, newStatus: string): Boolean => {
+    return (
+      (newStatus == "PENDING" && ["PENDING"].includes(oldStatus)) ||
+      (newStatus == "ACCEPTED" &&
+        ["ACCEPTED", "PENDING"].includes(oldStatus)) ||
+      (newStatus == "RETURNED" &&
+        ["RETURNED", "ACCEPTED"].includes(oldStatus)) ||
+      (newStatus == "REJECTED" && ["REJECTED", "PENDING"].includes(oldStatus))
+    );
+  };
 }
 
 export default new BorrowsMiddleware();

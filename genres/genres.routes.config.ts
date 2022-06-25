@@ -23,7 +23,7 @@ export class GenresRoutes extends CommonRoutesConfig {
           "style",
           `Style is required in primary, secondary, success, danger, warning, info, light, dark.`
         ).matches(
-          /\b(?:primary|secondary|success|danger|warning|info|light|dark,)\b/
+          /\b(?:primary|secondary|success|danger|warning|info|light|dark)\b/
         ),
         bodyValidationMiddleware.verifyBodyFieldsErrors,
         jwtMiddleware.validJWTNeeded,

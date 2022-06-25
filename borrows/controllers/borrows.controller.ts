@@ -17,7 +17,7 @@ class BorrowsController {
   }
 
   async getBorrowById(req: express.Request, res: express.Response) {
-    const borrow = await borrowsService.readById(req.body.id);
+    const borrow = await borrowsService.readById(req.params.borrowId);
     res.status(200).send(borrow);
   }
 
@@ -34,12 +34,26 @@ class BorrowsController {
   }
 
   async put(req: express.Request, res: express.Response) {
-    log(await borrowsService.putById(req.params.id, req.body));
+    log(await borrowsService.putById(req.params.borrowId, req.body));
     res.status(204).send();
   }
 
   async removeBorrow(req: express.Request, res: express.Response) {
     log(await borrowsService.deleteById(req.params.id));
+    res.status(204).send();
+  }
+
+  async patchStatus(req: express.Request, res: express.Response) {
+    if (req.body.status == "ACCEPTED" || req.body.status == "REJECTED") {
+      req.body.requestManagedBy = res.locals.jwt.userId;
+      req.body.requestProcessedAt = new Date();
+      req.body.deadline =
+        req.body.status == "ACCEPTED" ? req.body.deadline : null;
+    } else if (req.body.status == "RETURNED") {
+      req.body.returnManagedBy = res.locals.jwt.userId;
+      req.body.returnedAt = new Date();
+    }
+    log(await borrowsService.patchStatusById(req.params.borrowId, req.body));
     res.status(204).send();
   }
 }

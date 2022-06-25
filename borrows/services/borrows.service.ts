@@ -39,6 +39,10 @@ class BorrowsService implements CRUD {
   async getByIds(readerId: string, bookId: string) {
     return borrowsDao.getBorrowByData({ readerId: readerId, bookId: bookId });
   }
+
+  async patchStatusById(id: string, resource: PatchBorrowDto) {
+    return borrowsDao.updateBorrowById(id, resource);
+  }
 }
 
 export default new BorrowsService();
