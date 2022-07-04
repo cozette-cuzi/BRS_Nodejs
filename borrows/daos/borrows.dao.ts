@@ -4,40 +4,49 @@ import mongooseService from "../../common/services/mongoose.service";
 import { CreateBorrowDto } from "../dto/create.borrow.dto";
 import { PatchBorrowDto } from "../dto/patch.borrow.dto";
 import { PutBorrowDto } from "../dto/put.borrow.dto";
+import { BorrowDocument } from "./borrow.document";
 
 const log: debug.IDebugger = debug("app:borrows-dao");
 
 class BorrowsDao {
   Schema = mongooseService.getMongoose().Schema;
+  mongoose = mongooseService.getMongoose();
 
   borrowSchema = new this.Schema(
     {
       _id: String,
-      readerId: String,
-      bookId: String,
+      readerId: { type: this.Schema.Types.ObjectId, ref: "Users" },
+      bookId: { type: this.Schema.Types.ObjectId, ref: "Books" },
       status: String,
       requestProcessedAt: Date,
-      requestManagedBy: String,
+      requestManagedBy: { type: this.Schema.Types.ObjectId, ref: "Users" },
       deadline: Date,
       returnedAt: Date,
-      returnManagedBy: String,
+      returnManagedBy: { type: this.Schema.Types.ObjectId, ref: "Users" },
     },
     { id: false }
   );
-
-  Borrow = mongooseService.getMongoose().model("Borrows", this.borrowSchema);
+  Borrow = mongooseService
+    .getMongoose()
+    .model<BorrowDocument>("Borrows", this.borrowSchema);
 
   constructor() {
     log("Created new instance of BorrowsDao");
   }
 
   async addBorrow(borrowFields: CreateBorrowDto) {
-    const borrowId = shortid.generate();
+    const borrowId = new this.mongoose.Types.ObjectId();
     const borrow = new this.Borrow({
       _id: borrowId,
       ...borrowFields,
       status: "PENDING",
     });
+    // const borrow = new this.Borrow();
+    // borrow._id = new this.mongoose.Types.ObjectId();
+    // borrow.status = "PENDING";
+    // borrow.readerId.push(borrowFields.readerId);
+    // borrow.bookId.push(borrowFields.bookId);
+
     await borrow.save();
     return borrowId;
   }

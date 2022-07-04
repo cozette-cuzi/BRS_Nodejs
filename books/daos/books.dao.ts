@@ -9,6 +9,7 @@ const log: debug.IDebugger = debug("app:books-dao");
 
 class BooksDao {
   Schema = mongooseService.getMongoose().Schema;
+  mongoose = mongooseService.getMongoose();
 
   bookSchema = new this.Schema(
     {
@@ -22,10 +23,10 @@ class BooksDao {
       languageCode: String,
       isbn: String,
       inStock: Number,
+      borrows: [{ type: this.mongoose.Types.ObjectId, ref: "Borrows" }],
     },
     { id: false }
   );
-
   Book = mongooseService.getMongoose().model("Books", this.bookSchema);
 
   constructor() {
@@ -33,7 +34,7 @@ class BooksDao {
   }
 
   async addBook(bookFields: CreateBookDto) {
-    const bookId = shortid.generate();
+    const bookId = new this.mongoose.Types.ObjectId();
     const book = new this.Book({
       _id: bookId,
       ...bookFields,

@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 export interface CreateBookDto {
   title: string;
   authors: string;
