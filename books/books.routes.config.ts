@@ -7,6 +7,7 @@ import bodyValidationMiddleware from "../common/middleware/body.validation.middl
 import booksController from "./controllers/books.controller";
 import { body } from "express-validator";
 import booksMiddleware from "./middleware/books.middleware";
+import multerUploadService from "../common/services/multer.service";
 
 export class BooksRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
@@ -42,6 +43,12 @@ export class BooksRoutes extends CommonRoutesConfig {
       .all(booksMiddleware.validateBookExists, jwtMiddleware.validJWTNeeded)
       .get(booksController.getBookById)
       .delete(booksController.removeBook);
+    this.app
+      .route(`/cover-image/:bookId`)
+      .post(
+        multerUploadService.array("coverImage", 1),
+        booksController.uploadCoverImage
+      );
     return this.app;
   }
 }

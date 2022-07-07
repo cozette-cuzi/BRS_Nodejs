@@ -3,7 +3,7 @@ export interface PutBookDto {
     authors: string;
     releasedAt: Date;
     description: string;
-    coverImage: string;
+    coverImage: Object;
     pages: number;
     languageCode: string;
     isbn: string;
